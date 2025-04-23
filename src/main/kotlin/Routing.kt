@@ -19,7 +19,7 @@ fun Application.configureRouting() {
 
 	routing {
 		// POST /joit -- join the game!
-		get("/join") {
+		post("/join") {
 			val player = call.receive<Player>()
 			val playerId = UUID.randomUUID().toString()
 			val newPlayer = player.copy(id = playerId)
