@@ -52,11 +52,12 @@ fun Application.configureRouting() {
 							GameState.addMove(move)
 							val result = GameState.getGameResult()
 							if (result != null) {
+								// send result to all players :)
 								connectionMap.values.forEach { connection ->
 									connection.send(Frame.Text(Json.encodeToString(result)))
 								}
-								GameState.resetGame()
-								connectionMap.clear()
+								GameState.resetGame() // reset game state
+								connectionMap.clear() // clear connection map
 								break
 							}
 						}
@@ -64,7 +65,7 @@ fun Application.configureRouting() {
 					}
 				}
 			} catch (e: Exception) {
-				println("WebSocket error: ${e.message}")
+				println("WebSocket error: ${e.message}") // bark if something goes wrong
 			} finally {
 				connectionMap.remove(playerId)
 			}
