@@ -16,6 +16,12 @@ enum class Move {
 }
 
 @Serializable
+data class GameMove(
+	val player: Player,
+	val move: Move,
+)
+
+@Serializable
 data class GameResult(
 	val player1: Player,
 	val player2: Player?,
