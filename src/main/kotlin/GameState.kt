@@ -14,7 +14,7 @@ object GameState {
 	}
 
 	fun addMove(gameMove: GameMove) {
-		gameMoves[gameMove.player.id] = gameMove
+		gameMoves[gameMove.playerId.id] = gameMove
 		checkGameResult()
 	}
 
