@@ -9,6 +9,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import kotlinx.serialization.json.Json
 import java.time.Duration
 import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
@@ -32,5 +33,54 @@ fun Application.configureRouting() {
 		get("/players") {
 			call.respond(GameState.getPlayers())
 		}
+		// WebSocket /game -- Handle moves and broadcast results
+		webSocket("/game") {
+			val playerId = call.parameters["playerId"] ?: run {
+				close(CloseReason(CloseReason.Codes.PROTOCOL_ERROR, "Player ID required"))
+				return@webSocket
+			}
+			if (GameState.getPlayers().none { it.id == playerId }) {
+				close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "Invalid player ID"))
+				return@webSocket
+			}
+			connectionMap[playerId] = this
+			try {
+				for (frame in incoming) {
+					if (frame is Frame.Text) {
+						val move = Json.decodeFromString<GameMove>(frame.readText())
+						if (move.playerId.id != playerId) {
+							GameState.addMove(move)
+							val result = GameState.getGameResult()
+							if (result != null) {
+								connectionMap.values.forEach { connection ->
+									connection.send(Frame.Text(Json.encodeToString(result)))
+								}
+								GameState.resetGame()
+								connectionMap.clear()
+								break
+							}
+						}
+
+					}
+				}
+			} catch (e: Exception) {
+				println("WebSocket error: ${e.message}")
+			} finally {
+				connectionMap.remove(playerId)
+			}
+		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
