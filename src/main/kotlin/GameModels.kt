@@ -21,6 +21,13 @@ data class GameMove(
 	val move: Move,
 )
 
+// raw data from the client **acts as a temporary storage**
+@Serializable
+data class RawGameMove(
+	val playerId: String,
+	val move: Move,
+)
+
 @Serializable
 data class GameResult(
 	val player1: Player,

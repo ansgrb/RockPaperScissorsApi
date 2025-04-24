@@ -39,29 +39,36 @@ fun Application.configureRouting() {
 				close(CloseReason(CloseReason.Codes.PROTOCOL_ERROR, "Player ID required"))
 				return@webSocket
 			}
-			if (GameState.getPlayers().none { it.id == playerId }) {
+
+			val player = GameState.getPlayers().find { it.id == playerId }
+			if (player == null) {
 				close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "Invalid player ID"))
 				return@webSocket
 			}
+
 			connectionMap[playerId] = this
 			try {
 				for (frame in incoming) {
 					if (frame is Frame.Text) {
-						val move = Json.decodeFromString<GameMove>(frame.readText())
-						if (move.playerId.id != playerId) {
-							GameState.addMove(move)
-							val result = GameState.getGameResult()
-							if (result != null) {
-								// send result to all players :)
-								connectionMap.values.forEach { connection ->
-									connection.send(Frame.Text(Json.encodeToString(result)))
-								}
-								GameState.resetGame() // reset game state
-								connectionMap.clear() // clear connection map
-								break
-							}
+
+						val rawMove = Json.decodeFromString<RawGameMove>(frame.readText())
+
+						if (rawMove.playerId != playerId) {
+							continue
 						}
 
+						val gameMove = GameMove(playerId = player, move = rawMove.move)
+
+						GameState.addMove(gameMove)
+						val result = GameState.getGameResult()
+						if (result != null) {
+							connectionMap.values.forEach { connection ->
+								connection.send(Json.encodeToString(result))
+							}
+							GameState.resetGame()
+							connectionMap.clear()
+							break
+						}
 					}
 				}
 			} catch (e: Exception) {
