@@ -4,3 +4,5 @@ ktor:
       - dev.ansgrb.ApplicationKt.module
   deployment:
     port: 8080
+    host: 0.0.0.0
+
