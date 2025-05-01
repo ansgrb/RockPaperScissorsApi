@@ -30,6 +30,10 @@ dependencies {
 	implementation("ch.qos.logback:logback-classic:$logback_version")
 	implementation("io.ktor:ktor-server-config-yaml")
 	implementation("io.ktor:ktor-server-cors")
+	implementation("org.jetbrains.exposed:exposed-core:0.46.0")
+	implementation("org.jetbrains.exposed:exposed-dao:0.46.0")
+	implementation("org.jetbrains.exposed:exposed-jdbc:0.46.0")
+	implementation("org.postgresql:postgresql:42.7.3")
 	testImplementation("io.ktor:ktor-server-test-host")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
