@@ -1,0 +1,16 @@
+name: rps-mongo
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: ${COMPOSE_PROJECT_NAME}_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: russia
+
+volumes:
+  mongodb_data:
