@@ -1,16 +1,41 @@
 package dev.ansgrb
 
+import io.ktor.server.websocket.WebSocketServerSession
 import java.util.concurrent.ConcurrentHashMap
 
 object GameState {
+
+	// websocket sessions for active players (players that joined the game)
+	private val sessions = ConcurrentHashMap<String, WebSocketServerSession>() // this is a map of sessions
+
 	private val players = ConcurrentHashMap<String, Player>()
 	private val gameMoves = ConcurrentHashMap<String, GameMove>()
 	private var gameResult: GameResult? = null
 
-	fun addPlayer(player: Player): Boolean {
-		if (players.size >= 2) return false // max 2 players
-		players[player.id] = player
+	// need to make it s suspend function to use MongoDB collection
+	suspend fun addPlayer(player: Player): Boolean {
+
+		// check how many players already joined
+		val playerCount = try {
+			MongoDB.playersCollection.countDocuments()
+		} catch (e: Exception) {
+			throw RuntimeException("Failed to count players: ${e.message}", e)
+		}
+
+		// our limit is two players at a time
+		if (playerCount >= 2) return false
+
+		// insert player to MongoDB collection
+		try {
+			MongoDB.playersCollection.insertOne(player)
+		} catch (e: Exception) {
+			throw RuntimeException("Failed to insert player: ${e.message}", e)
+		}
 		return true
+
+//		if (players.size >= 2) return false // max 2 players
+//		players[player.id] = player
+//		return true
 	}
 
 	fun addMove(gameMove: GameMove) {

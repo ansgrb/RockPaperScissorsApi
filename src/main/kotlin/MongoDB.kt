@@ -48,6 +48,7 @@ object MongoDB {
 	}
 }
 
+// we aded this function to be able to run it from tests and to initialize MongoDB on startup with ktor
 fun Application.initMongoDB() {
 	runBlocking {
 		MongoDB.init()

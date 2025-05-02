@@ -1,10 +1,11 @@
 package dev.ansgrb
 
 import kotlinx.serialization.Serializable
+import java.util.UUID
 
 @Serializable
 data class Player(
-	val id: String,
+	val id: String = UUID.randomUUID().toString(),
 	val name: String,
 )
 
@@ -24,12 +25,13 @@ data class GameMove(
 // raw data from the client **acts as a temporary storage**
 @Serializable
 data class RawGameMove(
-	val playerId: String,
+	val playerId: String = UUID.randomUUID().toString(),
 	val move: Move,
 )
 
 @Serializable
 data class GameResult(
+	val id: String = UUID.randomUUID().toString(),
 	val player1: Player,
 	val player2: Player?,
 	val player1Move: Move?,
