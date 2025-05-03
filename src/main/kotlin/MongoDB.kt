@@ -26,8 +26,6 @@ object MongoDB {
 		try {
 			playersCollection.createIndex(Indexes.ascending("id"))
 			gameMovesCollection.createIndex(Indexes.ascending("playerId"))
-			gameResultsCollection.createIndex(Indexes.ascending("player1.id"))
-			gameResultsCollection.createIndex(Indexes.ascending("player2.id"))
 			gameResultsCollection.createIndex(Indexes.ascending("winner"))
 			println("MongoDB collections initialized")
 
