@@ -3,7 +3,7 @@
 This project is an implementation of a multiplayer **Rock-Paper-Scissors** game API developed using [Ktor](https://ktor.io).
 
 ### Todo list:
-* [ ] Adding a database (MongoDB)
+* [x] Adding a database (MongoDB)
 * [ ] JWT auth to secure endpoints
 * [ ] Enhance features (game history, leaderboard)
 * [ ] Logging and error handling
