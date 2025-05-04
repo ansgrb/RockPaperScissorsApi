@@ -25,7 +25,7 @@ fun Application.configureRouting() {
 		post("/login") {
 			val player = call.receive<Player>()
 			val user = User(id = UUID.randomUUID().toString(), name = player.name)
-			val token = generateToken(user)
+			val token = application.generateToken(user)
 			call.respond(mapOf("token" to token, "playerId" to user.id, "name" to user.name))
 		}
 
@@ -44,29 +44,29 @@ fun Application.configureRouting() {
 					call.respond(HttpStatusCode.Conflict, "Game is full")
 				}
 			}
-		}
 
-		// WebSocket /game -- Handle moves and broadcast results
-		webSocket("/game") {
-			val principal = call.principal<JWTPrincipal>()
-			val playerId = principal?.payload?.getClaim("id")?.asString() ?: run {
-				close(CloseReason(CloseReason.Codes.PROTOCOL_ERROR, "Invalid token"))
-				return@webSocket
-			}
-			GameState.addSession(playerId, this)
-			try {
-				for (frame in incoming) {
-					if (frame is Frame.Text) {
-						val move = Json.decodeFromString<GameMove>(frame.readText())
-						if (move.playerId == playerId) {
-							GameState.addMove(move)
+			// WebSocket /game -- Handle moves and broadcast results
+			webSocket("/game") {
+				val principal = call.principal<JWTPrincipal>()
+				val playerId = principal?.payload?.getClaim("id")?.asString() ?: run {
+					close(CloseReason(CloseReason.Codes.PROTOCOL_ERROR, "Invalid token"))
+					return@webSocket
+				}
+				GameState.addSession(playerId, this)
+				try {
+					for (frame in incoming) {
+						if (frame is Frame.Text) {
+							val move = Json.decodeFromString<GameMove>(frame.readText())
+							if (move.playerId == playerId) {
+								GameState.addMove(move)
+							}
 						}
 					}
+				} catch (e: Exception) {
+					call.application.environment.log.error("WebSocket error for player $playerId", e)
+				} finally {
+					GameState.removeSession(playerId)
 				}
-			} catch (e: Exception) {
-				call.application.environment.log.error("WebSocket error for player $playerId", e)
-			} finally {
-				GameState.removeSession(playerId)
 			}
 		}
 

@@ -12,12 +12,18 @@ data class User(
 	val name: String,
 )
 
+// shared function to get config values to ensure consistency
+private fun getConfigValue(application: Application, key: String, default: String): String {
+	return application.environment.config.propertyOrNull(key)?.getString() ?: default
+}
+
 fun Application.configureAuth() {
 
 	// JWT configuration from application.conf file
-	val secret = environment.config.propertyOrNull("jwt.secret")?.getString() ?: "secret"
-	val issuer = environment.config.propertyOrNull("jwt.issuer")?.getString() ?: "http://localhost:8080"
-	val audience = environment.config.propertyOrNull("jwt.audience")?.getString() ?: "http://localhost:8080"
+	val secret = getConfigValue(this, "jwt.secret", "secret")
+	val issuer = getConfigValue(this, "jwt.issuer", "http://localhost:8080")
+	val audience = getConfigValue(this, "jwt.audience", "http://localhost:8080")
+
 
 	// JWT Authentication Provider
 	install(Authentication) {
@@ -43,10 +49,11 @@ fun Application.configureAuth() {
 	}
 }
 
-fun generateToken(user: User): String {
-	val secret = System.getenv("JWT_SECRET") ?: "secret"
-	val issuer = System.getenv("JWT_ISSUER") ?: "http://localhost:8080"
-	val audience = System.getenv("JWT_AUDIENCE") ?: "http://localhost:8080"
+fun Application.generateToken(user: User): String {
+	// read config using the shared function
+	val secret = getConfigValue(this, "jwt.secret", "secret")
+	val issuer = getConfigValue(this, "jwt.issuer", "http://localhost:8080")
+	val audience = getConfigValue(this, "jwt.audience", "http://localhost:8080")
 
 	return JWT.create()
 		.withAudience(audience)
@@ -55,5 +62,4 @@ fun generateToken(user: User): String {
 		.withClaim("name", user.name)
 		.withExpiresAt(Date(System.currentTimeMillis() + 604800000)) // 7 days in milliseconds duh!
 		.sign(Algorithm.HMAC256(secret))
-	
 }
