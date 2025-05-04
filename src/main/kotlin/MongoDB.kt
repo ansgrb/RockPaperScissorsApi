@@ -10,7 +10,7 @@ import kotlinx.coroutines.runBlocking
 object MongoDB {
 
 	private val client: MongoClient = try {
-		val connectionString = System.getenv("MONGO_URL") ?: "mongodb://localhost:27017"
+		val connectionString = System.getenv("MONGO_URL") ?: "mongodb://root:russia@localhost:27017/rps-mongo_db?authSource=admin"
 		MongoClient.create(connectionString)
 	} catch (e: Exception) {
 		throw RuntimeException("Failed to connect to MongoDB: ${e.message}", e)
@@ -46,7 +46,7 @@ object MongoDB {
 	}
 }
 
-// we aded this function to be able to run it from tests and to initialize MongoDB on startup with ktor
+// we added this function to be able to run it from tests and to initialize MongoDB on startup with ktor
 fun Application.initMongoDB() {
 	runBlocking {
 		MongoDB.init()

@@ -9,10 +9,11 @@ fun main(args: Array<String>) {
 fun Application.module() {
 
 	initMongoDB() // initialize mongo
-
+	configureAuth()
 	configureSockets()
 	configureSerialization()
 	configureRouting()
 	configureCORS()
+
 }
 

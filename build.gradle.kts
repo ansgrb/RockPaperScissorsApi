@@ -31,6 +31,9 @@ dependencies {
 	implementation("io.ktor:ktor-server-config-yaml")
 	implementation("io.ktor:ktor-server-cors")
 	implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.1.3")
+	implementation("io.ktor:ktor-server-auth:2.3.7")
+	implementation("io.ktor:ktor-server-auth-jwt:2.3.7")
+	implementation("com.auth0:jwks-rsa:0.22.1")
 	testImplementation("io.ktor:ktor-server-test-host")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }

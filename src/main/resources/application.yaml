@@ -6,3 +6,7 @@ ktor:
     port: 8080
     host: 0.0.0.0
 
+#jwt:
+#  secret = "russia"
+#  issuer = "https://0.0.0.0:8080"
+#  audience "https://0.0.0.0:8080"
