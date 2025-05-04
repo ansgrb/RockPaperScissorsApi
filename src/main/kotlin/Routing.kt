@@ -3,6 +3,9 @@ package dev.ansgrb
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.principal
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
@@ -18,67 +21,79 @@ fun Application.configureRouting() {
 	val connectionMap = mutableMapOf<String, DefaultWebSocketServerSession>()
 
 	routing {
-		// POST /joit -- join the game!
-		post("/join") {
+		// login endpoint to generate a JWT token
+		post("/login") {
 			val player = call.receive<Player>()
-			val playerId = UUID.randomUUID().toString()
-			val newPlayer = player.copy(id = playerId)
-			if (GameState.addPlayer(newPlayer)) {
-				call.respond(HttpStatusCode.Created, newPlayer)
-			} else {
-				call.respond(HttpStatusCode.Conflict, "Game is full")
+			val user = User(id = UUID.randomUUID().toString(), name = player.name)
+			val token = generateToken(user)
+			call.respond(mapOf("token" to token, "playerId" to user.id, "name" to user.name))
+		}
+
+		// secure the /join endpoint with JWT authentication
+		authenticate("auth-jwt") {
+			post("/join") {
+				val principal = call.principal<JWTPrincipal>()
+				val playerId = principal?.payload?.getClaim("id")?.asString() ?: throw IllegalArgumentException("Invalid token")
+				val name = principal.payload.getClaim("name").asString()
+				val newPlayer = Player(id = playerId, name = name)
+
+				// add the player to the game and respond with the player object or 409 Conflict if the game is full.
+				if (GameState.addPlayer(newPlayer)) {
+					call.respond(HttpStatusCode.Created, newPlayer)
+				} else {
+					call.respond(HttpStatusCode.Conflict, "Game is full")
+				}
 			}
 		}
-		// GET /players -- list players
-		get("/players") {
-			call.respond(GameState.getPlayers())
-		}
+
 		// WebSocket /game -- Handle moves and broadcast results
 		webSocket("/game") {
-			val playerId = call.parameters["playerId"] ?: run {
-				close(CloseReason(CloseReason.Codes.PROTOCOL_ERROR, "Player ID required"))
+			val principal = call.principal<JWTPrincipal>()
+			val playerId = principal?.payload?.getClaim("id")?.asString() ?: run {
+				close(CloseReason(CloseReason.Codes.PROTOCOL_ERROR, "Invalid token"))
 				return@webSocket
 			}
-
-			val player = GameState.getPlayers().find { it.id == playerId }
-			if (player == null) {
-				close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "Invalid player ID"))
-				return@webSocket
-			}
-
-			connectionMap[playerId] = this
+			GameState.addSession(playerId, this)
 			try {
 				for (frame in incoming) {
 					if (frame is Frame.Text) {
-
-						val rawMove = Json.decodeFromString<RawGameMove>(frame.readText())
-
-						if (rawMove.playerId != playerId) {
-							continue
-						}
-
-						val gameMove = GameMove(playerId = player, move = rawMove.move)
-
-						GameState.addMove(gameMove)
-						val result = GameState.getGameResult()
-						if (result != null) {
-							connectionMap.values.forEach { connection ->
-								connection.send(Json.encodeToString(result))
-							}
-							GameState.resetGame()
-							connectionMap.clear()
-							break
+						val move = Json.decodeFromString<GameMove>(frame.readText())
+						if (move.playerId == playerId) {
+							GameState.addMove(move)
 						}
 					}
 				}
 			} catch (e: Exception) {
-				println("WebSocket error: ${e.message}") // bark if something goes wrong
+				call.application.environment.log.error("WebSocket error for player $playerId", e)
 			} finally {
-				connectionMap.remove(playerId)
+				GameState.removeSession(playerId)
 			}
+		}
+
+		// GET /players -- list players (public endpoint to get all players)
+		get("/players") {
+			call.respond(GameState.getPlayers())
+		}
+
+		// GET /result -- get the game result (public endpoint to get the game result)
+		get("/result") {
+			val result = GameState.getGameResult()
+			if (result == null) {
+				call.respond(HttpStatusCode.NotFound, "No game result yet")
+			} else {
+				call.respond(result)
+			}
+//			GameState.resetGame()
+		}
+
+		 // GET /reset -- reset the game (public endpoint to reset the game)
+		get("/reset") {
+			GameState.resetGame()
+			call.respond(HttpStatusCode.OK, "Game reset")
 		}
 	}
 }
+
 
 
 

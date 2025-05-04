@@ -18,7 +18,8 @@ enum class Move {
 
 @Serializable
 data class GameMove(
-	val playerId: Player,
+	val id: String = UUID.randomUUID().toString(),
+	val playerId: String,
 	val move: Move,
 )
 
