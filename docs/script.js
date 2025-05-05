@@ -52,6 +52,19 @@ async function fetchPlayers() {
     }
 }
 
+async function fetchLeaderboard() {
+    try {
+        const response = await fetch(`${apiBaseUrl}/leaderboard`);
+        const leaderboard = await response.json();
+        const leaderboardList = document.getElementById('leaderboard');
+        leaderboardList.innerHTML = leaderboard.map(entry => `<li>${entry.player || 'Tie'}: ${entry.wins} wins</li>`).join('');
+    } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', fetchLeaderboard);
+
 function connectWebSocket() {
     // Note: WebSocket headers for auth might not work in all browsers
     // You may need to pass the token as a query param or use a different approach
