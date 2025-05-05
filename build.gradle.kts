@@ -34,6 +34,8 @@ dependencies {
 	implementation("io.ktor:ktor-server-auth:2.3.7")
 	implementation("io.ktor:ktor-server-auth-jwt:2.3.7")
 	implementation("com.auth0:jwks-rsa:0.22.1")
+	implementation("org.slf4j:slf4j-simple:2.0.13")
+	implementation("io.ktor:ktor-server-status-pages")
 	testImplementation("io.ktor:ktor-server-test-host")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
