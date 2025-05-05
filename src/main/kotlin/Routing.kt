@@ -106,9 +106,9 @@ fun Application.configureRouting() {
 				.groupBy { it.winner } // winner winner
 				.map { (winner, results) ->
 					val player = if (winner == "tie") null else MongoDB.playersCollection.find(Filters.eq("id", winner)).firstOrNull()
-					mapOf("player" to player?.name, "wins" to results.size)
+					mapOf("player" to player?.name, "wins" to results.size.toString())
 				}
-				.sortedByDescending { it["wins"] as Int? ?: 0 }
+				.sortedByDescending { it["wins"] }
 			call.respond(leaderboard)
 		}
 	}

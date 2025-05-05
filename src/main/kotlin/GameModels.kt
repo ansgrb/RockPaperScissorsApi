@@ -23,13 +23,6 @@ data class GameMove(
 	val move: Move,
 )
 
-// raw data from the client **acts as a temporary storage**
-@Serializable
-data class RawGameMove(
-	val playerId: String = UUID.randomUUID().toString(),
-	val move: Move,
-)
-
 @Serializable
 data class GameResult(
 	val id: String = UUID.randomUUID().toString(),
