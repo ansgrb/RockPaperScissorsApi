@@ -16,12 +16,14 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.serialization.json.Json
+import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 fun Application.configureRouting() {
 	val connectionMap = mutableMapOf<String, DefaultWebSocketServerSession>()
+	val logger = LoggerFactory.getLogger("Routing")
 
 	routing {
 		// login endpoint to generate a JWT token
@@ -38,6 +40,7 @@ fun Application.configureRouting() {
 				val principal = call.principal<JWTPrincipal>()
 				val playerId = principal?.payload?.getClaim("id")?.asString() ?: throw IllegalArgumentException("Invalid token")
 				val name = principal.payload.getClaim("name").asString()
+				logger.info("Player joining: $name (ID: $playerId)")
 				val newPlayer = Player(id = playerId, name = name)
 
 				// add the player to the game and respond with the player object or 409 Conflict if the game is full.
