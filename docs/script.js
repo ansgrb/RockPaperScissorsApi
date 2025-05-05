@@ -1,6 +1,6 @@
-const apiBaseUrl = 'https://rockpaperscissorsapi-production.up.railway.app';
+let token = null;
 let playerId = null;
-let ws = null;
+const apiBaseUrl = 'https://rockpaperscissorsapi-production.up.railway.app';
 
 document.getElementById('joinButton').addEventListener('click', async () => {
     const playerName = document.getElementById('playerName').value;
@@ -10,13 +10,26 @@ document.getElementById('joinButton').addEventListener('click', async () => {
     }
 
     try {
-        const response = await fetch(`${apiBaseUrl}/join`, {
+        // First, log in to get a JWT token
+        const loginResponse = await fetch(`${apiBaseUrl}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: '', name: playerName })
         });
-        const data = await response.json();
-        playerId = data.id;
+        const loginData = await loginResponse.json();
+        token = loginData.token;
+        playerId = loginData.playerId;
+
+        // Then, join the game with the token
+        const joinResponse = await fetch(`${apiBaseUrl}/join`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ id: playerId, name: playerName })
+        });
+        const joinData = await joinResponse.json();
         document.getElementById('playerIdValue').textContent = playerId;
         document.getElementById('playerId').classList.remove('hidden');
         document.getElementById('gameSection').classList.remove('hidden');
@@ -40,11 +53,13 @@ async function fetchPlayers() {
 }
 
 function connectWebSocket() {
-    ws = new WebSocket(`wss://rockpaperscissorsapi-production.up.railway.app/game?playerId=${playerId}`);
+    // Note: WebSocket headers for auth might not work in all browsers
+    // You may need to pass the token as a query param or use a different approach
+    ws = new WebSocket(`wss://rockpaperscissorsapi-production.up.railway.app/game`);
     ws.onopen = () => console.log('WebSocket connected');
     ws.onmessage = (event) => {
         const result = JSON.parse(event.data);
-        document.getElementById('gameResult').textContent = `Result: ${result.player1.name} played ${result.player1Move}, ${result.player2.name} played ${result.player2Move}. Winner: ${result.winner === 'tie' ? 'Tie' : result.winner === playerId ? 'You' : 'Opponent'}`;
+        document.getElementById('gameResult').textContent = `Result: ${result.player1Id} played ${result.player1Move}, ${result.player2Id} played ${result.player2Move}. Winner: ${result.winner === 'tie' ? 'Tie' : result.winner === playerId ? 'You' : 'Opponent'}`;
         ws.close();
     };
     ws.onerror = (error) => console.error('WebSocket error:', error);
