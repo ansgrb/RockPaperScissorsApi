@@ -8,6 +8,7 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
 
+	configureErrorHandler()
 	initMongoDB() // initialize mongo
 	configureAuth()
 	configureSockets()
