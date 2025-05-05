@@ -1,5 +1,6 @@
 package dev.ansgrb
 
+import com.mongodb.client.model.Filters
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -12,6 +13,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.toList
 import kotlinx.serialization.json.Json
 import java.time.Duration
 import java.util.UUID
@@ -90,6 +93,23 @@ fun Application.configureRouting() {
 		get("/reset") {
 			GameState.resetGame()
 			call.respond(HttpStatusCode.OK, "Game reset")
+		}
+
+		get("/history") {
+			val result = MongoDB.gameResultsCollection.find().toList()
+			call.respond(result)
+		}
+
+		get("/leaderboard") {
+			val leaderboard = MongoDB.gameResultsCollection.find()
+				.toList()
+				.groupBy { it.winner } // winner winner
+				.map { (winner, results) ->
+					val player = if (winner == "tie") null else MongoDB.playersCollection.find(Filters.eq("id", winner)).firstOrNull()
+					mapOf("player" to player?.name, "wins" to results.size.toString())
+				}
+				.sortedByDescending { it["wins"] }
+			call.respond(leaderboard)
 		}
 	}
 }
