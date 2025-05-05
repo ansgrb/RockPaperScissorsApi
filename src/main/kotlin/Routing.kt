@@ -40,6 +40,10 @@ fun Application.configureRouting() {
 				val principal = call.principal<JWTPrincipal>()
 				val playerId = principal?.payload?.getClaim("id")?.asString() ?: throw IllegalArgumentException("Invalid token")
 				val name = principal.payload.getClaim("name").asString()
+				if (name.isNullOrBlank()) {
+					call.respond(HttpStatusCode.BadRequest, "Name cannot be blank")
+					return@post
+				}
 				logger.info("Player joining: $name (ID: $playerId)")
 				val newPlayer = Player(id = playerId, name = name)
 
