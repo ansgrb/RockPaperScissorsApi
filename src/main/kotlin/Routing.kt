@@ -100,13 +100,13 @@ fun Application.configureRouting() {
 			call.respond(result)
 		}
 
-		get("leaderboard") {
+		get("/leaderboard") {
 			val leaderboard = MongoDB.gameResultsCollection.find()
 				.toList()
 				.groupBy { it.winner } // winner winner
 				.map { (winner, results) ->
 					val player = if (winner == "tie") null else MongoDB.playersCollection.find(Filters.eq("id", winner)).firstOrNull()
-					mapOf("player" to player, "results" to results)
+					mapOf("player" to player?.name, "wins" to results.size)
 				}
 				.sortedByDescending { it["wins"] as Int? ?: 0 }
 			call.respond(leaderboard)
