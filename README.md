@@ -5,10 +5,10 @@ This project is an implementation of a multiplayer **Rock-Paper-Scissors** game 
 ### Todo list:
 * [x] Adding a database (MongoDB)
 * [x] JWT auth to secure endpoints
-* [ ] Enhance features (game history, leaderboard)
-* [ ] Logging and error handling
+* [x] Enhance features (game history, leaderboard)
+* [x] Logging and error handling
 * [ ] Scaling with Redis (cashing) and Railway (auto-scaling)
-* [ ] Security with rate-limiting and input validation
+* [x] Security with rate-limiting and input validation
 * [ ] Monitoring and UptimeRobot
 * [ ] A very, very stretch goal for blockchain integration
 
