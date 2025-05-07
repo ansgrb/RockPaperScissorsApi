@@ -1,13 +1,13 @@
-package dev.ansgrb
+package com.github.ansgrb.rockpaperscissors.server
 
 import com.mongodb.client.model.Filters
+import com.github.ansgrb.rockpaperscissorsapi.shared.GameMove
+import com.github.ansgrb.rockpaperscissorsapi.shared.Player
 import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal
-import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -17,9 +17,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
-import java.time.Duration
 import java.util.UUID
-import kotlin.time.Duration.Companion.seconds
 
 fun Application.configureRouting() {
 	val connectionMap = mutableMapOf<String, DefaultWebSocketServerSession>()
