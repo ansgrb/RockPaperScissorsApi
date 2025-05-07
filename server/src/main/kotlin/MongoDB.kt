@@ -11,6 +11,9 @@ object MongoDB {
 
 	private val client: MongoClient = try {
 		val connectionString = System.getenv("MONGO_URL") ?: "mongodb://root:russia@localhost:27017/rps-mongo_db?authSource=admin"
+		if (System.getProperty("test") == "true") {
+			throw Exception("Test mode - skipping MongoDB connection")
+		}
 		MongoClient.create(connectionString)
 	} catch (e: Exception) {
 		throw RuntimeException("Failed to connect to MongoDB: ${e.message}", e)
@@ -23,6 +26,12 @@ object MongoDB {
 	val gameResultsCollection = database.getCollection<GameResult>("gameResults")
 
 	suspend fun init() {
+		if (System.getProperty("test") == "true") {
+			println("Test mode - skipping MongoDB initialization")
+			return
+		}
+
+
 		try {
 			playersCollection.createIndex(Indexes.ascending("id"))
 			gameMovesCollection.createIndex(Indexes.ascending("playerId"))

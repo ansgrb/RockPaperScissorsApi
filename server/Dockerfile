@@ -3,7 +3,7 @@ FROM gradle:8.5-jdk17 AS build
 
 RUN apt-get update && apt-get install -y ca-certificates && apt-get clean
 
-COPY --chown=gradle:gradle . /home/gradle/src
+COPY --chown=gradle:gradle .. /home/gradle/src
 WORKDIR /home/gradle/src
 
 RUN ./gradlew buildFatJar --no-daemon
