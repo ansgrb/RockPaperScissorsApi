@@ -48,6 +48,7 @@ allprojects {
 //	implementation("org.slf4j:slf4j-simple:2.0.13")
 //	implementation("io.ktor:ktor-server-status-pages")
 //	implementation("io.ktor:ktor-server-rate-limit:2.3.7")
+
 //	testImplementation("io.ktor:ktor-server-test-host")
 //	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 //}

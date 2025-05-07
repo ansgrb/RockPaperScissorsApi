@@ -12,6 +12,12 @@ application {
 	mainClass.set("dev.ansgrb.ApplicationKt")
 }
 
+tasks.test {
+	systemProperty("test", "false")
+	useJUnitPlatform()
+}
+
+
 
 dependencies {
 	implementation(project(":shared"))
@@ -33,11 +39,14 @@ dependencies {
 	implementation("com.auth0:jwks-rsa:0.22.1")
 	implementation("org.slf4j:slf4j-simple:2.0.13")
 
-	testImplementation("io.ktor:ktor-server-test-host:${ktor_version}")
-	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${kotlin_version}")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0") // Use a recent version
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0") // Use the same version as api
+	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:${kotlin_version}")
+
+
+//	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:${kotlin_version}")
+//	testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
+//	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.2")
+//	testImplementation("io.mockk:mockk:1.13.8")
+
 }
-
-//application {
-//	mainClass.set("dev.ansgrb.MainKt")
-//}
-
