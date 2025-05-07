@@ -1,4 +1,4 @@
-package com.github.ansgrb.rockpaperscissors.server
+package com.github.ansgrb.rockpaperscissorsapi.server
 
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes
