@@ -1,4 +1,4 @@
-package dev.ansgrb
+package com.github.ansgrb.rockpaperscissors.server
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm

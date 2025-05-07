@@ -1,4 +1,4 @@
-package dev.ansgrb
+package com.github.ansgrb.rockpaperscissors.server
 
 import io.ktor.server.application.Application
 import io.ktor.server.application.install

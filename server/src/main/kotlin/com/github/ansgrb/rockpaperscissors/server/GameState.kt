@@ -1,14 +1,16 @@
-package dev.ansgrb
+package com.github.ansgrb.rockpaperscissors.server
 
 import com.mongodb.client.model.Filters
-import io.ktor.server.application.* // Required for logging
+import com.mongodb.client.model.Sorts
+import com.github.ansgrb.rockpaperscissorsapi.shared.GameMove
+import com.github.ansgrb.rockpaperscissorsapi.shared.GameResult
+import com.github.ansgrb.rockpaperscissorsapi.shared.Move
+import com.github.ansgrb.rockpaperscissorsapi.shared.Player
 import io.ktor.server.websocket.WebSocketServerSession
 import io.ktor.websocket.Frame
-import io.ktor.websocket.send
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.isActive
-import kotlinx.serialization.encodeToString // Explicit import might be needed
 import kotlinx.serialization.json.Json
 import java.util.concurrent.ConcurrentHashMap
 
@@ -78,7 +80,7 @@ object GameState { // Keeping it simple for now
 	suspend fun getGameResult(): GameResult? {
 		return try {
 			// fetch the most recently inserted result (consider adding a timestamp and sorting if needed)
-			MongoDB.gameResultsCollection.find().sort(com.mongodb.client.model.Sorts.descending("_id")).firstOrNull()
+			MongoDB.gameResultsCollection.find().sort(Sorts.descending("_id")).firstOrNull()
 		} catch (e: Exception) {
 			// log.error("Failed to retrieve game result", e)
 			throw RuntimeException("Failed to retrieve game result: ${e.message}", e)

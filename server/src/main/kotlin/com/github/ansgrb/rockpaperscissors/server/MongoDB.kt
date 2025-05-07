@@ -1,9 +1,12 @@
-package dev.ansgrb
+package com.github.ansgrb.rockpaperscissors.server
 
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import com.github.ansgrb.rockpaperscissorsapi.shared.GameMove
+import com.github.ansgrb.rockpaperscissorsapi.shared.GameResult
+import com.github.ansgrb.rockpaperscissorsapi.shared.Player
 import io.ktor.server.application.Application
 import kotlinx.coroutines.runBlocking
 

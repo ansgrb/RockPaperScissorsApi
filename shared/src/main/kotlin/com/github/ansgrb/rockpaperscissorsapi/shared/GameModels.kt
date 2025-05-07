@@ -1,4 +1,4 @@
-package dev.ansgrb
+package com.github.ansgrb.rockpaperscissorsapi.shared
 
 import kotlinx.serialization.Serializable
 import java.util.UUID
