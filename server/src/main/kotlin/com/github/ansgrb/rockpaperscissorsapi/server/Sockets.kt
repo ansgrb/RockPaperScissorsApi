@@ -1,4 +1,4 @@
-package com.github.ansgrb.rockpaperscissors.server
+package com.github.ansgrb.rockpaperscissorsapi.server
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*

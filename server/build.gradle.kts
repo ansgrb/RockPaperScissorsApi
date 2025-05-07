@@ -9,7 +9,7 @@ val kotlinVersion: String by project
 val logbackVersion: String by project
 
 application {
-	mainClass.set("dev.ansgrb.ApplicationKt")
+	mainClass.set("com.github.ansgrb.rockpaperscissorsapi.server.ApplicationKt")
 }
 
 tasks.test {
@@ -37,7 +37,7 @@ dependencies {
 	implementation("ch.qos.logback:logback-classic:$logbackVersion")
 	implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.1.3")
 	implementation("com.auth0:jwks-rsa:0.22.1")
-	implementation("org.slf4j:slf4j-simple:2.0.13")
+//	implementation("org.slf4j:slf4j-simple:2.0.13")
 
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0") // Use a recent version
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0") // Use the same version as api

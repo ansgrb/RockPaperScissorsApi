@@ -1,4 +1,4 @@
-package com.github.ansgrb.rockpaperscissors.server
+package com.github.ansgrb.rockpaperscissorsapi.server
 
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*

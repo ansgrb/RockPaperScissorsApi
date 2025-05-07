@@ -1,4 +1,4 @@
-package com.github.ansgrb.rockpaperscissors.server
+package com.github.ansgrb.rockpaperscissorsapi.server
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
