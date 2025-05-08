@@ -9,7 +9,7 @@ import kotlinx.coroutines.runBlocking
 
 class CliApp : CliktCommand() {
 	init {
-		subcommands(JoinCommand(), ListPlayersCommand(), PlayCommand())
+		subcommands(LoginCommand(), JoinCommand(), ListPlayersCommand(), PlayCommand())
 	}
 
 	override fun run() {
