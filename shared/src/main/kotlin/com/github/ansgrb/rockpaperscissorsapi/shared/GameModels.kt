@@ -35,3 +35,6 @@ data class GameResult(
 
 @Serializable
 data class JoinRequestPayload(val id: String? = null, val name: String)
+
+@Serializable
+data class LoginResponse(val token: String, val playerId: String, val name: String)
