@@ -1,12 +1,12 @@
+val ktorVersion: String by project
+val kotlinVersion: String by project
+val logbackVersion: String by project
+
 plugins {
 	kotlin("jvm")
 	kotlin("plugin.serialization")
 	id("io.ktor.plugin")
 }
-
-val ktorVersion: String by project
-val kotlinVersion: String by project
-val logbackVersion: String by project
 
 application {
 	mainClass.set("com.github.ansgrb.rockpaperscissorsapi.server.ApplicationKt")

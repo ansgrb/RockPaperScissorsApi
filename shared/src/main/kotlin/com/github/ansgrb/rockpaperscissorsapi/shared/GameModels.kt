@@ -32,3 +32,6 @@ data class GameResult(
 	val player2Move: Move?,
 	val winner: String?,
 )
+
+@Serializable
+data class JoinRequestPayload(val id: String? = null, val name: String)
