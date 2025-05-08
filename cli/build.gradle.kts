@@ -22,6 +22,7 @@ dependencies {
 	implementation("io.ktor:ktor-client-content-negotiation:${ktorVersion}")
 	implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
 	implementation("io.ktor:ktor-client-websockets:${ktorVersion}")
+	implementation("io.ktor:ktor-client-auth:${ktorVersion}")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 //	implementation("org.slf4j:slikt-simple:2.0.13")
 }

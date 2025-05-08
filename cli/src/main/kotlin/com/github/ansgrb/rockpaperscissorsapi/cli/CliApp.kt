@@ -14,24 +14,27 @@ class CliApp : CliktCommand() {
 
 	override fun run() {
 		echo("Welcome to Rock Paper Scissors CLI!")
-		echo("Use a subcommand: 'join', 'list-players', or 'play'. Try 'rps <subcommand> --help'.")
-
+		echo("Use a subcommand: 'login <name>', 'join', 'list-players', or 'play'. Try 'rps <subcommand> --help'.")
 	}
 }
 
-class JoinCommand : CliktCommand() {
+class LoginCommand : CliktCommand(name = "login") {
 	private val name: String by argument(help = "Your player name")
-	override fun run() = runBlocking { echo(ApiClient.joinGame(name)) }
+	override fun run() = runBlocking { echo(ApiClient.login(name)) }
+}
+
+class JoinCommand : CliktCommand() {
+	override fun run() = runBlocking { echo(ApiClient.joinGame()) }
 }
 
 class ListPlayersCommand : CliktCommand(name = "list-players") {
 	override fun run() = runBlocking { echo(ApiClient.listPlayers()) }
 }
 
-class PlayCommand : CliktCommand() {
-	private val playerId: String by option("-p", "--player-id", help = "Your Player ID").required()
+class PlayCommand : CliktCommand(name = "play") {
 	override fun run() {
-		echo("Starting interactive game session for Player ID: $playerId")
-		runBlocking { ApiClient.playGame(playerId) { message -> this@PlayCommand.echo(message) } }
+		// the `ApiClient` will use its internally stored currentPlayerId
+		echo("Starting interactive game session...")
+		runBlocking { ApiClient.playGame { message -> this@PlayCommand.echo(message) } }
 	}
 }
