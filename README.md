@@ -3,19 +3,6 @@
 A **multiplayer Rock–Paper–Scissors API** crafted with [Ktor](https://ktor.io), offering JWT authentication, MongoDB persistence, live WebSocket play, leaderboard tracking, and more!
 
 ---
-
-## 🚩 Table of Contents
-
-- [Features](#features)
-- [To-Do List](#to-do-list)
-- [Getting Started](#getting-started)
-- [API Reference](#api-reference)
-- [Use Case Scenarios](#use-case-scenarios)
-- [CLI Client (Experimental)](#cli-client-experimental)
-- [Tech Stack](#tech-stack)
-
----
-
 ## ✨ Features
 
 |  | **Name**                                                                  | **Description**                                                                           |
@@ -212,5 +199,5 @@ The CLI lets you:
 
 ---
 
-> 🥳 **Enjoy Rock-Paper-Scissors powered by modern Kotlin!**  
+> 🥳 **Enjoy Rock-Paper-Scissors powered by Kotlin!**  
 > _Questions, feedback & PRs welcome!_
