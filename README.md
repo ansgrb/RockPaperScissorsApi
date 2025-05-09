@@ -1,4 +1,5 @@
 # 🎮 RockPaperScissorsApi 🪨📄✂️
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ansgrb/RockPaperScissorsApi)
 
 A **multiplayer Rock–Paper–Scissors API** crafted with [Ktor](https://ktor.io), offering JWT authentication, MongoDB persistence, live WebSocket play, leaderboard tracking, and more!
 
